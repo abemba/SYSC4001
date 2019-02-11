@@ -50,7 +50,6 @@ int main (int argc, char **argv)
 				{2,3,4}};
 	long product[3][3];
 
-	printf("%d \n",matrix_a[0][2]);
 
     //long input_n[] = {1, 3, 5, 7, 2, 4, 6, 8, 7, 3, 5, 7, 8, 6, 4, 2};
 
@@ -83,7 +82,7 @@ int main (int argc, char **argv)
             }
 
 
-	  //  printf("%d  %d  %d \n", product[i][0],product[i][1],product[i][2]);
+	   printf("%d  %d  %d \n", product[i][0],product[i][1],product[i][2]);
 	    
 		exit(0);
         }
