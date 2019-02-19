@@ -1,90 +1,107 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
-//type pid_t is found in this file
-#include <sys/types.h>
-//import the declaration of the fork function
-#include <unistd.h>
-//import the exit function
-#include <stdlib.h>
+#include <sys/shm.h>
+#include <sys/types.h> // pid_t
+#include <unistd.h> // fork
+#include <stdlib.h> // exit
+
+
 #define MATRIX_SIZE 4
 
 
-long *output;
+long (*output)[MATRIX_SIZE];
 
+/**
+ *  Calculate the matrix product for certain rows
+ *
+ *  @param row The first row index
+ *  @param num_rows The number of rows for which the product should be calculated
+ *  @param m The first input matrix
+ *  @param n The second input matrix
+ *  @param out The matrix in which the output should be placed
+ */
+void product_for_rows (int row, int num_rows, long (*m)[MATRIX_SIZE] ,long (*n)[MATRIX_SIZE], long (*out)[MATRIX_SIZE])
+{
+    long long sum;
+    
+    for (int i = row; i < (row + num_rows); i++) {
+        for (int k = 0; k < MATRIX_SIZE; k++) {
+            sum = 0;
+            for (int j = 0; j < MATRIX_SIZE; j++) {
+                sum += m[i][j] * n[j][k];
+            }
+            out[i][k] = sum;
+        }
+    }
+}
+
+/**
+ *  Print a matrix
+ *
+ *  @param The matrix to be printed
+ */
+void print_matrix (long (*matrix)[MATRIX_SIZE])
+{
+    for (int i = 0; i < MATRIX_SIZE; i++) {
+        for (int j = 0; j < MATRIX_SIZE; j++) {
+            printf("%3ld  ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+}
 
 int main (int argc, char **argv)
 {
-	//Separation of concern
-	//solve the problem in a non shared memory space
-	//then solve the problem in a shared memory space
-
-
-    /* Setup shared memory 
+    /* Setup shared memory */
     int shmid = shmget((key_t)1234, sizeof(long) * MATRIX_SIZE * MATRIX_SIZE, 0666 | IPC_CREAT); 
     if (shmid == -1) {
         fprintf(stderr, "Failed to get shared memory: %s\n", strerror(errno));
         exit(1);
     }
 
-
     output = shmat(shmid, NULL, 0);
-    if (output == (int*) -1) {
+    if ((int)output == -1) {
         fprintf(stderr, "Failed to attach shared memory: %s\n", strerror(errno));
         exit(1);
     }
-	*/
 
 
     /* Setup inputs */
-          //long input_m[] = {1, 2, 3, 4, 5, 6, 7, 8, 4, 3, 2, 1, 8, 7, 6, 5};
-    
-	long matrix_a[3][3] ={
-				{1,2,3},
-				{1,2,1},
-				{2,1,2}};
+	long matrix_m[MATRIX_SIZE][MATRIX_SIZE] = {
+				{1, 2, 3, 4},
+				{5, 6, 7, 8},
+				{4, 3, 2, 1},
+                {8, 7, 6, 5}};
 
-	long matrix_b[3][3] ={
-				{2,1,3},
-				{2,2,5},
-				{2,3,4}};
-	long product[3][3];
-
-
-    //long input_n[] = {1, 3, 5, 7, 2, 4, 6, 8, 7, 3, 5, 7, 8, 6, 4, 2};
+	long matrix_n[MATRIX_SIZE][MATRIX_SIZE] = {
+                {1, 3, 5, 7},
+                {2, 4, 6, 8},
+                {7, 3, 5, 7},
+                {8, 6, 4, 2}};
 
     /* Compute product */
     pid_t children[MATRIX_SIZE];
-
-
-
-    for (int i = 0; i < 3; i++) {
+    
+    for (int i = 0; i < MATRIX_SIZE; i++) {
         children[i] = fork();
-
+        
         if (children[i] == -1) {
             fprintf(stderr, "Failed to fork: %s\n", strerror(errno));
             exit(1);
-        } else if (children[i] == 0) 
-	{
-            // Child doing matrix_a*matrix_b 
-		
-	    long long sum;
-            
-	    for (int k = 0; k < 3; k++) 
-	    {
-		sum=0;
-                for (int j = 0; j < 3; j++) 
-		{
-                    sum = matrix_a[i][k]*matrix_b[j][i] + sum;
-		 
-                }
-		product[i][k]=sum;
-            }
-
-
-	   printf("%d  %d  %d \n", product[i][0],product[i][1],product[i][2]);
-	    
-		exit(0);
+        } else if (children[i] == 0) {
+            // Child for row i
+            product_for_rows(i, 1, matrix_m, matrix_n, output);
+            exit(0);
         }
-    } 
+    }
+    
+    /* Wait for all children to complete to print output matrix */
+    for (int i = 0; i < MATRIX_SIZE; i++) {
+        waitpid(children[i], NULL, 0);
+    }
+    print_matrix(output);
+    
+    /* Unmap shared memory */
+    shmdt(output);
 }
