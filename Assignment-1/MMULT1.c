@@ -10,7 +10,7 @@
 #define MATRIX_SIZE 4
 
 
-long (*output)[MATRIX_SIZE];
+long (*matrix_q)[MATRIX_SIZE];
 
 /**
  *  Calculate the matrix product for certain rows
@@ -23,15 +23,12 @@ long (*output)[MATRIX_SIZE];
  */
 void product_for_rows (int row, int num_rows, long (*m)[MATRIX_SIZE] ,long (*n)[MATRIX_SIZE], long (*out)[MATRIX_SIZE])
 {
-    long long sum;
-    
     for (int i = row; i < (row + num_rows); i++) {
         for (int k = 0; k < MATRIX_SIZE; k++) {
-            sum = 0;
+            out[i][k] = 0;
             for (int j = 0; j < MATRIX_SIZE; j++) {
-                sum += m[i][j] * n[j][k];
+                out[i][k] += m[i][j] * n[j][k];
             }
-            out[i][k] = sum;
         }
     }
 }
@@ -60,8 +57,8 @@ int main (int argc, char **argv)
         exit(1);
     }
 
-    output = shmat(shmid, NULL, 0);
-    if ((int)output == -1) {
+    matrix_q = shmat(shmid, NULL, 0);
+    if ((int)matrix_q == -1) {
         fprintf(stderr, "Failed to attach shared memory: %s\n", strerror(errno));
         exit(1);
     }
@@ -91,17 +88,25 @@ int main (int argc, char **argv)
             exit(1);
         } else if (children[i] == 0) {
             // Child for row i
-            product_for_rows(i, 1, matrix_m, matrix_n, output);
+            printf("Child Process: working with row %d\n", i);
+            product_for_rows(i, 1, matrix_m, matrix_n, matrix_q);
             exit(0);
         }
     }
     
-    /* Wait for all children to complete to print output matrix */
+    /* Wait for all children to complete */
     for (int i = 0; i < MATRIX_SIZE; i++) {
         waitpid(children[i], NULL, 0);
     }
-    print_matrix(output);
+    
+    /* Print matrices */
+    printf("M:\n");
+    print_matrix(matrix_m);
+    printf("N:\n");
+    print_matrix(matrix_n);
+    printf("Q:\n");
+    print_matrix(matrix_q);
     
     /* Unmap shared memory */
-    shmdt(output);
+    shmdt(matrix_q);
 }
