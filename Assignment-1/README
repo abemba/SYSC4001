@@ -1,0 +1,14 @@
+SYSC 4001 Assignment 1
+
+Samuel Dewan - 1010*****
+Chance Abemba - 1010*****
+
+
+
+There is one makefile for both parts of the assignment. To build the assignment,
+simply run make in the main directory. Both parts will be built in their respective
+directories.
+
+Part 2 accepts a single command line argument, the number of processes which should
+be spawned. If no argument is provided it will default to 4 processes.
+

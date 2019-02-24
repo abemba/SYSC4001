@@ -1,12 +1,15 @@
 CC = gcc
 FLAGS = -std=c99 -Wall -Werror
 
-build: MMULT1 MMULT2
+MMULT1 = part-1/MMULT1
+MMULT2 = part-2/MMULT2
 
-MMULT1: MMULT1.c
+build: $(MMULT1) $(MMULT2)
 
-MULT2: MMULT2.c
+$(MMULT1): $(MMULT1).c
+
+$(MMULT2): $(MMULT2).c
 
 clean:
-	rm -f MMULT1
-	rm -f MMULT2
+	rm -f $(MMULT1)
+	rm -f $(MMULT2)
