@@ -5,7 +5,10 @@
 #include <sys/types.h> // pid_t
 #include <unistd.h> // fork
 #include <stdlib.h> // exit, strtol
+#include <sys/time.h>
 
+
+#define MICRO_SEC_IN_SEC 1000000
 
 #define MATRIX_SIZE 4
 
@@ -46,6 +49,18 @@ void print_matrix (long (*matrix)[MATRIX_SIZE])
         }
         printf("\n");
     }
+}
+
+/**
+ *  Calculate the elapsed time between two timevals.
+ *
+ *  @param start The start time
+ *  @param end The end time
+ *  @param return The time between the start and end in microseconds
+ */
+long get_elapsed (struct timeval *start, struct timeval *end)
+{
+    return ((end->tv_sec * MICRO_SEC_IN_SEC + end->tv_usec) - (start->tv_sec * MICRO_SEC_IN_SEC + start->tv_usec));
 }
 
 int main (int argc, char **argv)
@@ -98,6 +113,9 @@ int main (int argc, char **argv)
                 {8, 6, 4, 2}};
 
     /* Compute product */
+    struct timeval start_time;
+    gettimeofday(&start_time, NULL);
+
     pid_t children[MATRIX_SIZE];
     
     for (int i = 0; i < MATRIX_SIZE; i += rows_per_proc) {
@@ -127,6 +145,9 @@ int main (int argc, char **argv)
     for (int i = 0; i < MATRIX_SIZE; i++) {
         waitpid(children[i], NULL, 0);
     }
+
+    struct timeval end_time;
+    gettimeofday(&end_time, NULL);
     
     /* Print matrices */
     printf("M:\n");
@@ -136,6 +157,8 @@ int main (int argc, char **argv)
     printf("Q:\n");
     print_matrix(matrix_q);
     
+    printf("Time elapsed: %ld µs\n", get_elapsed(&start_time, &end_time));
+
     /* Unmap shared memory */
     shmdt(matrix_q);
 }
