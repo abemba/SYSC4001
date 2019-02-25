@@ -116,7 +116,7 @@ int main (int argc, char **argv)
     struct timeval start_time;
     gettimeofday(&start_time, NULL);
 
-    pid_t children[MATRIX_SIZE];
+    pid_t children[MATRIX_SIZE] = {0};
     
     for (int i = 0; i < MATRIX_SIZE; i += rows_per_proc) {
         children[i] = fork();
@@ -143,7 +143,9 @@ int main (int argc, char **argv)
     
     /* Wait for all children to complete */
     for (int i = 0; i < MATRIX_SIZE; i++) {
-        waitpid(children[i], NULL, 0);
+        if (children[i] != 0) {
+            waitpid(children[i], NULL, 0);
+        }
     }
 
     struct timeval end_time;
