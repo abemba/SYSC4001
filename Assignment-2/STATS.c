@@ -352,7 +352,10 @@ int main (int argc, char **argv)
     }
     
     /* Sort list */
-    fork_sort(list, LIST_LENGTH, inverse_compare, verbose);
+    if (fork_sort(list, LIST_LENGTH, inverse_compare, verbose)) {
+        fprintf(stderr, "Error sorting list.\n");
+        exit(1);
+    }
     
     /* Print list */
     printf("\nSorted list: ");
