@@ -1,0 +1,9 @@
+SYSC 4001 Assignment 2
+
+Samuel Dewan - 1010*****
+Chance Abemba - 1010*****
+
+There is a Makefile to compile the assignment. Run make and the assignment will be
+compiled automatically.
+
+The program will prompt the user for all required arguments when it is run.
