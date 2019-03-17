@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <sys/sem.h>
-//#include "semun.h"
+#include "semun.h"
 
 #define LIST_LENGTH 5
 
