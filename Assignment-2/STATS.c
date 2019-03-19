@@ -309,6 +309,22 @@ static int inverse_compare(int a, int b)
     return b - a;
 }
 
+//static int compare(int a, int b)
+//{
+//    return a - b;
+//}
+//
+//static int first_digit_compare(int a, int b)
+//{
+//    while (a >= 10) {
+//        a = a / 10;
+//    }
+//    while (b >= 10) {
+//        b = b / 10;
+//    }
+//    return b - a;
+//}
+
 int main (int argc, char **argv)
 {
     /* Setup shared memory */
@@ -362,8 +378,13 @@ int main (int argc, char **argv)
     /* Print list */
     printf("\nSorted list: ");
     print_array(list, LIST_LENGTH);
-    printf("Minimum: %d\n", list[LIST_LENGTH - 1]);
-    printf("Maximum: %d\n", list[0]);
+    if (list[LIST_LENGTH - 1] < list[0]) {
+        printf("Minimum: %d\n", list[LIST_LENGTH - 1]);
+        printf("Maximum: %d\n", list[0]);
+    } else {
+        printf("Minimum: %d\n", list[0]);
+        printf("Maximum: %d\n", list[LIST_LENGTH - 1]);
+    }
     int median = 0;
     if ((LIST_LENGTH % 2) == 0) {
         median = (list[(LIST_LENGTH / 2) - 1] + list[LIST_LENGTH / 2]) / 2;
