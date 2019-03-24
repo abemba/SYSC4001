@@ -25,4 +25,3 @@ The program makes use of two semaphore sets. The first set contains a semaphore 
 
 The second set contains two semaphores which control the rounds. The first is the round done semaphore, it is initilized to the number of processes, as each process finishes it decrements the semaphore. After starting a round, the main process waits for the semaphore to reach 0, which will happen when all of the sorting processes have completed their round. The second semaphore in the set is used to start a new round. After decrementing the first semaphore, the sorting processes attempt to decrement the second, it is initilized to 0 so they block. When the main process is ready to start a new round it sets the semaphore to the number of processes so that they can all decrement the semaphore and continue.
 
-
