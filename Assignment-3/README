@@ -1,0 +1,9 @@
+SYSC 4001 Assignment 3
+
+Samuel Dewan - 1010*****
+Chance Abemba - 1010*****
+
+There is a Makefile to compile the assignment. Run make and the assignment will be
+compiled automatically. The server binary is named "server" and the client binary is named "client".
+
+The client and server programs do not take any command line arguments.
