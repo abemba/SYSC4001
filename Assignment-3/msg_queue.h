@@ -1,5 +1,8 @@
 #include "msg_format.h"
 
+#ifndef msg_queue_h
+#define msg_queue_h
+
 /**
  *  Create message queues.
  *
@@ -60,3 +63,5 @@ extern int send_message_to_server(const struct message_t msg);
  *  @return 0 if successfull
  */
 extern int get_response_from_server(struct message_t *msg);
+
+#endif /* msg_queue_h */

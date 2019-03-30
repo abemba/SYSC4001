@@ -49,11 +49,11 @@ int start_server(void)
 
 void stop_server(void)
 {
-    if (msgctl(server_id, IPC_RMID, 0) == -1) {
+    if ((server_id != -1) && (msgctl(server_id, IPC_RMID, 0) == -1)) {
         fprintf(stderr, "Could not delete server message queue: %s\n",
                 strerror(errno));
     }
-    if (msgctl(client_id, IPC_RMID, 0) == -1) {
+    if ((client_id != -1) && (msgctl(client_id, IPC_RMID, 0) == -1)) {
         fprintf(stderr, "Could not delete client message queue: %s\n",
                 strerror(errno));
     }
