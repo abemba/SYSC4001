@@ -1,5 +1,8 @@
 #include <sys/types.h>
 
+#ifndef msg_format_h
+#define msg_format_h
+
 #define EMPLOYEE_NAME_LENGTH    12
 #define EMPLOYEE_DEPT_LENGTH    12
 #define EMPLOYEE_NUM_LENGTH     12
@@ -34,18 +37,14 @@ struct message_t {
     
     union {
         union {
-            struct {
-                struct employee_t employee;
-            } request;
+            struct employee_t request;
             struct {
                 enum server_response_type type;
             } response;
         } insert;
         
         union {
-            struct {
-                char number[EMPLOYEE_NUM_LENGTH];
-            } request;
+            char request[EMPLOYEE_NUM_LENGTH];
             struct {
                 char name[EMPLOYEE_NAME_LENGTH];
                 enum server_response_type type;
@@ -53,9 +52,7 @@ struct message_t {
         } check_name;
         
         union {
-            struct {
-                char number[EMPLOYEE_NUM_LENGTH];
-            } request;
+            char request[EMPLOYEE_NUM_LENGTH];
             struct {
                 char department[EMPLOYEE_DEPT_LENGTH];
                 enum server_response_type type;
@@ -63,18 +60,15 @@ struct message_t {
         } check_dept;
         
         union {
+            char request[EMPLOYEE_NUM_LENGTH];
             struct {
-                char number[EMPLOYEE_NUM_LENGTH];
-            } request;
-            struct {
+                int salary;
                 enum server_response_type type;
             } response;
         } check_salary;
         
         union {
-            struct {
-                char name[EMPLOYEE_NAME_LENGTH];
-            } request;
+            char request[EMPLOYEE_NAME_LENGTH];
             struct {
                 char number[EMPLOYEE_NUM_LENGTH];
                 enum server_response_type type;
@@ -82,9 +76,7 @@ struct message_t {
         } check_employee_num;
         
         union {
-            struct {
-                char department[EMPLOYEE_DEPT_LENGTH];
-            } request;
+            char request[EMPLOYEE_DEPT_LENGTH];
             struct {
                 char number[EMPLOYEE_NUM_LENGTH];
                 enum server_response_type type;
@@ -92,12 +84,12 @@ struct message_t {
         } list_dept;
         
         union {
-            struct {
-                char number[EMPLOYEE_NUM_LENGTH];
-            } request;
+            char request[EMPLOYEE_NUM_LENGTH];
             struct {
                 enum server_response_type type;
             } response;
-        }  delete;
+        } delete;
     };
 };
+
+#endif /* msg_format_h */
