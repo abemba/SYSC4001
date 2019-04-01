@@ -187,13 +187,17 @@ void check_num_func (struct message_t msg)
 
 void list_dept_func (struct message_t msg)
 {
+    struct message_t response;
+    response.client_pid = msg.client_pid;
+    response.type = msg.type;
+    
     for (int i = 0; i < data.length; i++) {
         struct employee_t *employee = array_list_get(&data, i);
         if (!strcmp(employee->department, msg.list_dept.request)) {
-            msg.list_dept.response.type = REQUEST_CONTINUE;
-            strncpy(msg.list_dept.response.number, employee->number,
+            response.list_dept.response.type = REQUEST_CONTINUE;
+            strncpy(response.list_dept.response.number, employee->number,
                     EMPLOYEE_NUM_LENGTH);
-            if (send_response_to_client(msg)) {
+            if (send_response_to_client(response)) {
                 fprintf(stderr, "Failed to send reponse to client with pid %jd\n",
                         (intmax_t) msg.client_pid);
             }
