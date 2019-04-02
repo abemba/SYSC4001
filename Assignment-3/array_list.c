@@ -60,10 +60,11 @@ void *array_list_pop (struct array_list_t *list, const int index)
     
     if (index != list->length) {
         // Need to shift values
-        memmove(list + index + 1, list + index, list->length - index - 1);
+        memmove(list->memory + index, list->memory + index + 1,
+                (list->length - index) * sizeof(*list->memory));
     }
     
-    list->length --;
+    list->length--;
     
     return tmp;
 }
