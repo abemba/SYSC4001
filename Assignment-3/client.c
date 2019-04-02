@@ -279,7 +279,7 @@ void delete_func (void)
     send_message_to_server(msg);
     get_response_from_server(&msg);
     
-    if (msg.insert.response.type == REQUEST_FAILURE) {
+    if (msg.delete.response.type == REQUEST_FAILURE) {
         printf("Failed to delete employee record.\n");
     }
 }

@@ -289,20 +289,22 @@ void delete_func (struct message_t msg)
 {
     // Find the employee who's number matches the request
     int i;
+    int removed = 0;
     for (i = 0; i < data.length; i++) {
         struct employee_t *employee = array_list_get(&data, i);
         if (!strcmp(employee->number, msg.delete.request)) {
             // Remove matching employee
             array_list_remove(&data, i);
+            removed = 1;
             break;
         }
     }
     
     // Send a failure if no matching employee was found
-    if (i >= data.length) {
-        msg.check_employee_num.response.type = REQUEST_FAILURE;
+    if (!removed) {
+        msg.delete.response.type = REQUEST_FAILURE;
     } else {
-        msg.check_employee_num.response.type = REQUEST_END;
+        msg.delete.response.type = REQUEST_END;
     }
     
     // Send a response to the client
