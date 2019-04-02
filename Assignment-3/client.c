@@ -6,6 +6,7 @@
 #include "msg_format.h"
 #include "msg_queue.h"
 
+/** Descriptor for command */
 struct command_t {
     char *name;
     void (*function)(void);
@@ -79,6 +80,13 @@ int main (int argc, char **argv)
     }
 }
 
+/**
+ *  Get a string from the user. Re-prompt the user until they enter a valid string.
+ *
+ *  @param propmt The prompt string
+ *  @param result Buffer in which the resulting string should be placed
+ *  @param res_length The length of the result buffer
+ */
 static void get_str (const char *prompt, char *result, int res_length)
 {
     char buffer[res_length + 1];
@@ -103,6 +111,9 @@ static void get_str (const char *prompt, char *result, int res_length)
     strncpy(result, buffer, res_length);
 }
 
+/**
+ *  Function to handle insert command
+ */
 void insert_func (void)
 {
     // Set up message
@@ -133,6 +144,9 @@ void insert_func (void)
     }
 }
 
+/**
+ *  Function to handle check name command
+ */
 void check_name_func (void)
 {
     // Set up message
@@ -153,6 +167,9 @@ void check_name_func (void)
     }
 }
 
+/**
+ *  Function to handle check department command
+ */
 void check_dept_func (void)
 {
     // Set up message
@@ -173,6 +190,9 @@ void check_dept_func (void)
     }
 }
 
+/**
+ *  Function to handle check salary command
+ */
 void check_salary_func (void)
 {
     // Set up message
@@ -193,6 +213,9 @@ void check_salary_func (void)
     }
 }
 
+/**
+ *  Function to handle check employee number command
+ */
 void check_num_func (void)
 {
     // Set up message
@@ -214,6 +237,9 @@ void check_num_func (void)
     }
 }
 
+/**
+ *  Function to handle list department command
+ */
 void list_dept_func (void)
 {
     // Set up message
@@ -237,6 +263,9 @@ void list_dept_func (void)
     }
 }
 
+/**
+ *  Function to handle delete command
+ */
 void delete_func (void)
 {
     // Set up message
@@ -254,13 +283,16 @@ void delete_func (void)
     }
 }
 
+/**
+ *  Function to handle quit command
+ */
 void quit_func (void)
 {
     stop_client();
     exit(0);
 }
 
-
+/** List of command descriptors */
 static struct command_t commands[NUM_COMMANDS] = {
     {.name = "insert", .function = insert_func},
     {.name = "check name", .function = check_name_func},
